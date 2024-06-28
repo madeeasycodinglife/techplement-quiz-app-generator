@@ -3,6 +3,10 @@ package com.madeeasy;
 import com.madeeasy.model.Quiz;
 import com.madeeasy.service.impl.QuizServiceImpl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Scanner;
 
@@ -94,26 +98,46 @@ public class TechPlementInternshipApplication {
     }
 
     private static void printHeader() {
-        System.out.println("*******************************************************************************");
-        System.out.println("*                                                                             *");
-        System.out.println("*                           @@@@@@@@@@@@@@@@@@@@@@@@                          *");
-        System.out.println("*                        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                       *");
-        System.out.println("*                     @@@@@@@@@@@@@@@@     @@@@@@@@@@@@@@@                    *");
-        System.out.println("*                  @@@@@@@@@@@@@@             @@@@@@@@@@@@@@                 *");
-        System.out.println("*               @@@@@@@@@@@@@@                   @@@@@@@@@@@@@@              *");
-        System.out.println("*            @@@@@@@@@@@@@@@      Techplement      @@@@@@@@@@@@@@            *");
-        System.out.println("*         @@@@@@@@@@@@@@@@@@                       @@@@@@@@@@@@@@@@@@        *");
-        System.out.println("*      @@@@@@@@@@@@@@@@@@@@@   Quiz App Generator   @@@@@@@@@@@@@@@@@@@      *");
-        System.out.println("*    @@@@@@@@@@@@@@@@@@@@@@                           @@@@@@@@@@@@@@@@@@@    *");
-        System.out.println("*      @@@@@@@@@@@@@@@@@@@@      Internship         @@@@@@@@@@@@@@@@@@@      *");
-        System.out.println("*         @@@@@@@@@@@@@@@@@@                       @@@@@@@@@@@@@@@@@@        *");
-        System.out.println("*            @@@@@@@@@@@@@@@                     @@@@@@@@@@@@@@@@@           *");
-        System.out.println("*               @@@@@@@@@@@@@@                 @@@@@@@@@@@@@@@@@              *");
-        System.out.println("*                  @@@@@@@@@@@@@@@          @@@@@@@@@@@@@@@@@                 *");
-        System.out.println("*                     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                   *");
-        System.out.println("*                        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                       *");
-        System.out.println("*                           @@@@@@@@@@@@@@@@@@@@@@@@                          *");
-        System.out.println("*                                                                             *");
-        System.out.println("*******************************************************************************");
+        // Load banner.txt using ClassLoader
+        InputStream inputStream = TechPlementInternshipApplication.class.getResourceAsStream("/banner.txt");
+        if (inputStream != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                String line;
+                int colorIndex = 0;
+                while ((line = reader.readLine()) != null) {
+                    // Print each line with a different color
+                    switch (colorIndex % 6) { // Example: 6 different colors
+                        case 0:
+                            System.out.println("\u001B[31m" + line); // Red
+                            break;
+                        case 1:
+                            System.out.println("\u001B[32m" + line); // Green
+                            break;
+                        case 2:
+                            System.out.println("\u001B[33m" + line); // Yellow
+                            break;
+                        case 3:
+                            System.out.println("\u001B[34m" + line); // Blue
+                            break;
+                        case 4:
+                            System.out.println("\u001B[35m" + line); // Purple
+                            break;
+                        case 5:
+                            System.out.println("\u001B[36m" + line); // Cyan
+                            break;
+                        default:
+                            System.out.println(line); // Default color
+                            break;
+                    }
+                    colorIndex++;
+                }
+                // Reset color after printing
+                System.out.print("\u001B[0m");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("banner.txt not found.");
+        }
     }
 }
