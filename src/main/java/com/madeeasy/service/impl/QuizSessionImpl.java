@@ -22,17 +22,57 @@ public class QuizSessionImpl implements QuizSession {
         this.currentQuestionIndex = 0;
     }
 
+//    @Override
+//    public Question getNextQuestion() {
+//        if (currentQuestionIndex < questions.size()) {
+//            return questions.get(currentQuestionIndex++);
+//        }
+//        return null;
+//    }
+//
+//    @Override
+//    public Question getCurrentQuestion() {
+//        if (currentQuestionIndex < questions.size()) {
+//            return questions.get(currentQuestionIndex);
+//        }
+//        return null;
+//    }
+//
+//    @Override
+//    public void nextQuestion() {
+//        if (currentQuestionIndex <= questions.size() - 1) {
+//            currentQuestionIndex++;
+//        }else {
+//            currentQuestionIndex++;
+//        }
+//    }
+//
+//    @Override
+//    public void previousQuestion() {
+//        if (currentQuestionIndex > 0) {
+//            currentQuestionIndex--;
+//        }else {
+//            currentQuestionIndex = questions.size();
+//        }
+//    }
+
+    //---------------------------------------------------------
+
+
+
     @Override
     public Question getNextQuestion() {
-        if (currentQuestionIndex < questions.size()) {
-            return questions.get(currentQuestionIndex++);
+        if (currentQuestionIndex < questions.size() - 1) {
+            return questions.get(++currentQuestionIndex);
+        } else {
+            currentQuestionIndex = 0; // Wrap around to the first question
+            return questions.get(currentQuestionIndex);
         }
-        return null;
     }
 
     @Override
     public Question getCurrentQuestion() {
-        if (currentQuestionIndex < questions.size()) {
+        if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.size()) {
             return questions.get(currentQuestionIndex);
         }
         return null;
@@ -40,8 +80,10 @@ public class QuizSessionImpl implements QuizSession {
 
     @Override
     public void nextQuestion() {
-        if (currentQuestionIndex < questions.size() - 1) {
+        if (currentQuestionIndex <= questions.size() - 1) {
             currentQuestionIndex++;
+        } else {
+            currentQuestionIndex = 0; // Wrap around to the first question
         }
     }
 
@@ -49,8 +91,11 @@ public class QuizSessionImpl implements QuizSession {
     public void previousQuestion() {
         if (currentQuestionIndex > 0) {
             currentQuestionIndex--;
+        } else {
+            currentQuestionIndex = questions.size() - 1; // Wrap around to the last question
         }
     }
+
 
     @Override
     public void submitAnswer(String questionId, String answer) {

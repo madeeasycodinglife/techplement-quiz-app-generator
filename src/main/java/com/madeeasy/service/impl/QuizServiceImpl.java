@@ -377,9 +377,9 @@ public class QuizServiceImpl implements QuizService {
         return null;
     }
 
-    private void runQuiz(Quiz targatedQuiz) {
+    private void runQuiz(Quiz targetedQuiz) {
         Scanner scanner = new Scanner(System.in);
-        QuizSession session = activeSessions.get(targatedQuiz.getQuizId());
+        QuizSession session = activeSessions.get(targetedQuiz.getQuizId());
         if (session == null) {
             System.out.println("Quiz session not found.");
             return;
@@ -387,66 +387,98 @@ public class QuizServiceImpl implements QuizService {
 
         while (true) {
             Question currentQuestion = session.getCurrentQuestion();
+
             if (currentQuestion == null) {
-                System.out.println("No more questions available.");
-                break;
-            }
+                System.out.println(Color.BOLD_RED + "No more questions available. Are you sure you want to quit ?" + Color.RESET);
+                String warnCommand;
+                boolean warnValidCommand;
 
-            System.out.println("Question: " + currentQuestion.getQuestion());
-            List<String> options = currentQuestion.getOptions();
-            for (int i = 0; i < options.size(); i++) {
-                char optionLabel = (char) ('a' + i);
-                System.out.println(optionLabel + ". " + options.get(i));
-            }
+                do {
+                    System.out.print("Command (" + Color.BOLD_WHITE + "previous" + Color.RESET + ", " +
+                            Color.BOLD_GREEN + "next" + Color.RESET + ", " + Color.RED + "quit" + Color.RESET + "): ");
+                    warnCommand = scanner.nextLine().trim().toLowerCase();
 
-            String userInput;
-            boolean validInput = false;
+                    // Validate command
+                    if (warnCommand.equals("next") || warnCommand.equals("previous") || warnCommand.equals("quit")) {
+                        warnValidCommand = true;
+                    } else {
+                        System.out.println("Invalid command. Please enter 'next', 'previous', or 'quit'.");
+                        warnValidCommand = false;
+                    }
+                } while (!warnValidCommand);
 
-            do {
-                System.out.print("Your answer (a, b, c, d) : ");
-                userInput = scanner.nextLine().trim().toLowerCase(); // Read user input and normalize to lowercase
-
-                // Check if userInput is valid
-                if (userInput.equals("a") || userInput.equals("b") || userInput.equals("c") || userInput.equals("d")) {
-                    validInput = true; // Exit loop if input is valid
-                } else {
-                    System.out.println("Invalid input. Please enter 'a', 'b', 'c', or 'd'.");
+                if (warnCommand.equals("quit")) {
+                    break;
+                } else if (warnCommand.equals("previous")) {
+                    session.previousQuestion();
+                } else if (warnCommand.equals("next")) {
+                    session.nextQuestion();
                 }
-            } while (!validInput);
-
-
-            session.submitAnswer(currentQuestion.getQuestion(), userInput);
-
-            String command;
-            boolean validCommand = false;
-
-            do {
-                System.out.print("Command (" + Color.BOLD_WHITE + "previous" + Color.RESET + ", " +
-                        Color.BOLD_GREEN + "next" + Color.RESET + ", " + Color.RED + "quit" + Color.RESET + "): ");
-                command = scanner.nextLine().trim().toLowerCase(); // Read user input and normalize to lowercase
-
-                // Check if command is valid
-                if (command.equals("next") || command.equals("previous") || command.equals("quit")) {
-                    validCommand = true; // Exit loop if command is valid
-                } else {
-                    System.out.println("Invalid command. Please enter 'next', 'previous', or 'quit'.");
-                }
-            } while (!validCommand);
-
-            if (command.equalsIgnoreCase("next")) {
-                session.nextQuestion();
-            } else if (command.equalsIgnoreCase("previous")) {
-                session.previousQuestion();
-            } else if (command.equalsIgnoreCase("quit")) {
-                break;
             } else {
-                System.out.println("Invalid command. Please try again.");
+                // Display current question
+                System.out.println("Question: " + currentQuestion.getQuestion());
+                List<String> options = currentQuestion.getOptions();
+                for (int i = 0; i < options.size(); i++) {
+                    char optionLabel = (char) ('a' + i);
+                    System.out.println(optionLabel + ". " + options.get(i));
+                }
+
+                // Get user input for answer
+                String userInput;
+                boolean validInput;
+
+                do {
+                    System.out.print("Your answer (a, b, c, d) : ");
+                    userInput = scanner.nextLine().trim().toLowerCase();
+
+                    // Validate user input
+                    if (userInput.equals("a") || userInput.equals("b") || userInput.equals("c") || userInput.equals("d")) {
+                        validInput = true;
+                    } else {
+                        System.out.println("Invalid input. Please enter 'a', 'b', 'c', or 'd'.");
+                        validInput = false;
+                    }
+                } while (!validInput);
+
+                // Submit user answer
+                session.submitAnswer(currentQuestion.getQuestion(), userInput);
+
+                // Get user command for navigation
+                String command;
+                boolean validCommand;
+
+                do {
+                    System.out.print("Command (" + Color.BOLD_WHITE + "previous" + Color.RESET + ", " +
+                            Color.BOLD_GREEN + "next" + Color.RESET + ", " + Color.RED + "quit" + Color.RESET + "): ");
+                    command = scanner.nextLine().trim().toLowerCase();
+
+                    // Validate command
+                    if (command.equals("next") || command.equals("previous") || command.equals("quit")) {
+                        validCommand = true;
+                    } else {
+                        System.out.println("Invalid command. Please enter 'next', 'previous', or 'quit'.");
+                        validCommand = false;
+                    }
+                } while (!validCommand);
+
+                // Process user command
+                if (command.equalsIgnoreCase("next")) {
+                    session.nextQuestion();
+                } else if (command.equalsIgnoreCase("previous")) {
+                    session.previousQuestion();
+                } else if (command.equalsIgnoreCase("quit")) {
+                    break;
+                } else {
+                    System.out.println("Invalid command. Please try again.");
+                }
             }
         }
 
+        // Display quiz results
         System.out.println("Quiz finished. Here are your results:");
         System.out.println(session.getResults());
     }
+
 
     @Override
     public List<Question> getQuestionsByQuizId(String quizId) {
