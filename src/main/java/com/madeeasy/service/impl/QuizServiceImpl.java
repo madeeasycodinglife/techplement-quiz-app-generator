@@ -111,6 +111,7 @@ public class QuizServiceImpl implements QuizService {
         return this.questions;
     }
 
+
     @Override
     public void addQuestionsToQuizByQuizId(String quizId) {
         Quiz foundQuizById = getQuizById(quizId);
@@ -118,14 +119,27 @@ public class QuizServiceImpl implements QuizService {
             System.out.println("Quiz not found. Please create a quiz first.");
             return;
         }
+
         Scanner scanner = new Scanner(System.in);
         String continueAddingQuestions;
-        List<Question> questionList = new ArrayList<>();
 
         do {
+            int difficultyLevel = 0;
+            boolean validInput = false;
 
-            System.out.print("Enter the difficulty level of the question: ");
-            int difficultyLevel = Integer.parseInt(scanner.nextLine());
+            while (!validInput) {
+                System.out.print("Enter the difficulty level of the question (1,2,3,4,5): ");
+                try {
+                    difficultyLevel = Integer.parseInt(scanner.nextLine());
+                    if (difficultyLevel < 1 || difficultyLevel > 5) {
+                        System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                    } else {
+                        validInput = true;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                }
+            }
 
             System.out.print("Enter the question text: ");
             String questionText = scanner.nextLine();
@@ -142,8 +156,17 @@ public class QuizServiceImpl implements QuizService {
                 }
             }
 
-            System.out.print("Enter the correct answer (a, b, c, or d): ");
-            String correctAnswer = scanner.nextLine();
+            String correctAnswer = "";
+            validInput = false;
+            while (!validInput) {
+                System.out.print("Enter the correct answer (a, b, c, or d): ");
+                correctAnswer = scanner.nextLine().trim().toLowerCase();
+                if (correctAnswer.equals("a") || correctAnswer.equals("b") || correctAnswer.equals("c") || correctAnswer.equals("d")) {
+                    validInput = true;
+                } else {
+                    System.out.println("Invalid input. Please enter 'a', 'b', 'c', or 'd'.");
+                }
+            }
 
             System.out.print("Enter the explanation: ");
             String explanation = scanner.nextLine();
@@ -160,15 +183,16 @@ public class QuizServiceImpl implements QuizService {
                     .options(options)
                     .build();
 
-            questionList.add(question);
+            foundQuizById.getQuestions().add(question);
 
-            System.out.print("Do you want to add another question? (yes/no) : ");
+            System.out.print("Do you want to add another question? (yes/no): ");
             continueAddingQuestions = scanner.nextLine();
 
         } while (continueAddingQuestions.equalsIgnoreCase("yes"));
-        foundQuizById.setQuestions(questionList);
-        this.quizDAO.createQuiz(foundQuizById);
+
+        this.quizDAO.updateQuiz(foundQuizById); // Update the existing quiz
     }
+
 
     @Override
     public void removeQuestionFromQuiz(String quizId, String questionId) {

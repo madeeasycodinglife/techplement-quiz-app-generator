@@ -17,11 +17,11 @@ public class QuizDAOImpl implements QuizDAO {
 
     @Override
     public void updateQuiz(Quiz updatedQuiz) {
-        Quiz quiz = getQuizById(updatedQuiz.getQuizId());
+        Quiz existingQuiz = getQuizById(updatedQuiz.getQuizId());
 
-        if (quiz != null) {
-            this.quizzes.remove(quiz); // Remove the existing quiz
-            this.quizzes.add(updatedQuiz); // Add the updated quiz
+        if (existingQuiz != null) {
+            int index = this.quizzes.indexOf(existingQuiz);
+            this.quizzes.set(index, updatedQuiz); // Update the existing quiz
         }
     }
 
