@@ -1,5 +1,6 @@
 package com.madeeasy;
 
+import com.madeeasy.color.Color;
 import com.madeeasy.model.Quiz;
 import com.madeeasy.service.impl.QuizServiceImpl;
 
@@ -19,12 +20,25 @@ public class TechPlementInternshipApplication {
 
         while (!exit) {
             printHeader();
-            System.out.println("Quiz Management System");
-            System.out.println("1. Create a Quiz");
-            System.out.println("2. Add Questions to a Quiz");
-            System.out.println("3. Start a Quiz");
-            System.out.println("4. Update Quiz");
-            System.out.println("5. Exit");
+            System.out.println(Color.BOLD_BLUE + "╔═══════════════════════════════════════╗" + Color.RESET);
+
+            // Title line with centered text
+            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_YELLOW + "        Quiz Management System         " + Color.BOLD_BLUE + "║" + Color.RESET);
+
+            // Separator line
+            System.out.println(Color.BOLD_BLUE + "╠═══════════════════════════════════════╣" + Color.RESET);
+
+            // Options with different colors
+            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_CYAN + " 1. Create a Quiz                      " + Color.BOLD_BLUE + "║" + Color.RESET);
+            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_PURPLE + " 2. Add Questions to a Quiz            " + Color.BOLD_BLUE + "║" + Color.RESET);
+            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_GREEN + " 3. Start a Quiz                       " + Color.BOLD_BLUE + "║" + Color.RESET);
+            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_WHITE + " 4. Update Quiz                        " + Color.BOLD_BLUE + "║" + Color.RESET);
+            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_RED + " 5. Exit                               " + Color.BOLD_BLUE + "║" + Color.RESET);
+
+            // Bottom border
+            System.out.println(Color.BOLD_BLUE + "╚═══════════════════════════════════════╝" + Color.RESET);
+
+            // Prompt for user input with bold yellow color
             System.out.print("Choose an option: ");
             try {
                 int choice = Integer.parseInt(scanner.nextLine());
