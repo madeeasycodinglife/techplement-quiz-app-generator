@@ -29,7 +29,7 @@ public interface QuizService {
     // Method to start a quiz and return the first question
     Question startQuiz();
 
-
+    void printQuizQuestionsWithAnswers(String quizId);
     // Method to get all questions from a specific quiz
     List<Question> getQuestionsByQuizId(String quizId);
 }

@@ -1,5 +1,6 @@
 package com.madeeasy.service.impl;
 
+import com.madeeasy.color.Color;
 import com.madeeasy.dao.impl.QuizDAOImpl;
 import com.madeeasy.model.Question;
 import com.madeeasy.model.Quiz;
@@ -113,6 +114,10 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public void addQuestionsToQuizByQuizId(String quizId) {
         Quiz foundQuizById = getQuizById(quizId);
+        if (foundQuizById == null) {
+            System.out.println("Quiz not found. Please create a quiz first.");
+            return;
+        }
         Scanner scanner = new Scanner(System.in);
         String continueAddingQuestions;
         List<Question> questionList = new ArrayList<>();
@@ -416,7 +421,8 @@ public class QuizServiceImpl implements QuizService {
             boolean validCommand = false;
 
             do {
-                System.out.print("Command (next, previous, quit): ");
+                System.out.print("Command (" + Color.BOLD_WHITE + "previous" + Color.RESET + ", " +
+                        Color.BOLD_GREEN + "next" + Color.RESET + ", " + Color.RED + "quit" + Color.RESET + "): ");
                 command = scanner.nextLine().trim().toLowerCase(); // Read user input and normalize to lowercase
 
                 // Check if command is valid
@@ -451,6 +457,31 @@ public class QuizServiceImpl implements QuizService {
         return null;
     }
 
+    @Override
+    public void printQuizQuestionsWithAnswers(String quizId) {
+        List<Question> foundQuestions = getQuestionsByQuizId(quizId);
+
+        if (foundQuestions == null || foundQuestions.isEmpty()) {
+            System.out.println("No questions found for the given quiz ID.");
+            return;
+        }
+        System.out.println();  // Empty line for separation
+        System.out.println();  // Empty line for separation
+        System.out.println();  // Empty line for separation
+
+        for (int i = 0; i < foundQuestions.size(); i++) {
+            Question question = foundQuestions.get(i);
+
+            // Print question number and name in bold cyan
+            System.out.println(Color.BOLD_CYAN + "Question " + (i + 1) + " : " + question.getQuestion() + Color.RESET);
+
+            // Print other details
+            System.out.println("Correct Answer : " + question.getCorrectAnswer());
+            System.out.println("Explanation : " + question.getExplanation());
+            System.out.println("Points : " + question.getPoints());
+            System.out.println();  // Empty line for separation
+        }
+    }
 
     private String createRandomQuizId() {
         return "QUIZ" + UUID.randomUUID().toString();

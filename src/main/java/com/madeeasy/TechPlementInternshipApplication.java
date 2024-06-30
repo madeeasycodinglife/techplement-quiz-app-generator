@@ -33,7 +33,8 @@ public class TechPlementInternshipApplication {
             System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_PURPLE + " 2. Add Questions to a Quiz            " + Color.BOLD_BLUE + "║" + Color.RESET);
             System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_GREEN + " 3. Start a Quiz                       " + Color.BOLD_BLUE + "║" + Color.RESET);
             System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_WHITE + " 4. Update Quiz                        " + Color.BOLD_BLUE + "║" + Color.RESET);
-            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_RED + " 5. Exit                               " + Color.BOLD_BLUE + "║" + Color.RESET);
+            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_CYAN + " 5. Get All Questions                  " + Color.BOLD_BLUE + "║" + Color.RESET);
+            System.out.println(Color.BOLD_BLUE + "║" + Color.BOLD_RED + " 6. Exit                               " + Color.BOLD_BLUE + "║" + Color.RESET);
 
             // Bottom border
             System.out.println(Color.BOLD_BLUE + "╚═══════════════════════════════════════╝" + Color.RESET);
@@ -95,7 +96,23 @@ public class TechPlementInternshipApplication {
                         String newDescription = scanner.nextLine();
                         quizService.updateQuiz(updateQuizId, newQuizName, newDescription, scanner);
                         break;
+
                     case 5:
+                        List<Quiz> allQuizzesToBePrintedOut = quizService.getAllQuizzes();
+                        if (allQuizzesToBePrintedOut.isEmpty()) {
+                            System.out.println("No Quizzes found. Please create a quiz first.");
+                            break;
+                        }
+                        System.out.println("Available Quizzes: ");
+                        for (Quiz q : allQuizzesToBePrintedOut) {
+                            System.out.println("Quiz ID: " + q.getQuizId() + ", Quiz Name: " + q.getQuizName());
+                        }
+
+                        System.out.print("Enter Quiz ID to search : ");
+                        String quizIdToBeSearched = scanner.nextLine();
+                        quizService.printQuizQuestionsWithAnswers(quizIdToBeSearched);
+                        break;
+                    case 6:
                         exit = true;
                         break;
 

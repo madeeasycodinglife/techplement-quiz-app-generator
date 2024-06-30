@@ -1,5 +1,6 @@
 package com.madeeasy.service.impl;
 
+import com.madeeasy.color.Color;
 import com.madeeasy.model.Question;
 import com.madeeasy.service.QuizSession;
 
@@ -71,16 +72,56 @@ public class QuizSessionImpl implements QuizSession {
     @Override
     public String getResults() {
         StringBuilder results = new StringBuilder();
+        System.out.println(); // Empty line for separation
+        System.out.println(); // Empty line for separation
+        System.out.println(); // Empty line for separation
         results.append("-------------------- Results :- -------------------\n");
-        for (Question question : questions) {
+
+        // Iterate through questions with an index for question numbering
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
             String userAnswer = userResponses.get(question.getQuestion());
-            results.append("Question : ").append(question.getQuestion()).append("\n");
-            results.append("Your Answer : ").append(userAnswer).append("\n");
-            results.append("Correct Answer : ").append(question.getCorrectAnswer()).append("\n");
+            boolean isCorrect = question.getCorrectAnswer().equals(userAnswer);
+
+            int questionNumber = i + 1; // Calculate question number (1-based index)
+
+            results.append("Question ").append(questionNumber).append(" : ").append(question.getQuestion()).append("\n");
+
+            // Append "Your Answer : " with appropriate color
+            results.append(isCorrect ? Color.BOLD_GREEN : Color.BOLD_RED)
+                    .append("Your Answer : ")
+                    .append(userAnswer)
+                    .append(Color.RESET); // Reset color after the answer
+
+            results.append("\n");
+            // Append "Correct Answer : " with green color
+            results.append(Color.BOLD_GREEN)
+                    .append("Correct Answer : ")
+                    .append(question.getCorrectAnswer())
+                    .append(Color.RESET); // Reset color after the correct answer
+
+            results.append("\n");
             results.append("Explanation : ").append(question.getExplanation()).append("\n");
-            results.append("Points : ").append(question.getCorrectAnswer().equals(userAnswer) ? question.getPoints() : 0).append("\n\n");
+            results.append("Points : ");
+
+            // Append points in purple color
+            results.append(Color.BOLD_PURPLE)
+                    .append(isCorrect ? question.getPoints() : 0)
+                    .append(Color.RESET); // Reset color after the points
+
+            results.append("\n\n");
         }
-        results.append("Total Score : ").append(calculateScore()).append("\n");
+
+        results.append("Total Score : ");
+
+        // Append total score in purple color
+        results.append(Color.BOLD_PURPLE)
+                .append(calculateScore())
+                .append(Color.RESET);  // Reset color after the total score
+
+        results.append("\n");
         return results.toString();
     }
+
+
 }
